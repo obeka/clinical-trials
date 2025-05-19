@@ -2,13 +2,32 @@
 <div *ngIf="error()" class="error">{{ error() }}</div>
 <div *ngIf="!loading() && trials().length === 0">No trials found.</div>
 
+<button
+  mat-raised-button
+  color="accent"
+  (click)="addToFavorites()"
+  [disabled]="selected().size === 0"
+  style="margin-bottom: 1rem"
+>
+  Add to Favorites
+</button>
+
 <mat-card *ngFor="let trial of trials()" class="trial-card">
-  <mat-card-title>
+  <mat-card-title style="display: flex; align-items: center; gap: 0.5rem">
+    <mat-checkbox
+      (change)="
+        toggleSelection(trial.protocolSection?.identificationModule?.nctId)
+      "
+      [checked]="
+        selected().has(trial.protocolSection?.identificationModule?.nctId)
+      "
+    ></mat-checkbox>
     {{
       trial.protocolSection?.identificationModule?.briefTitle ||
         "No title available"
     }}
   </mat-card-title>
+
   <mat-card-content>
     <p>
       <strong>NCT ID:</strong>

@@ -1,14 +1,17 @@
 import { Component, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { TrialsService } from '../../services/trial.service';
 import { catchError, finalize } from 'rxjs/operators';
 import { of, interval, Subscription } from 'rxjs';
+import { FavoritesService } from '../../services/favorites.service';
 
 @Component({
   selector: 'app-trial-list',
   standalone: true,
-  imports: [CommonModule, MatCardModule],
+  imports: [CommonModule, MatCardModule, MatButtonModule, MatCheckboxModule],
   templateUrl: './trial-list.component.html',
   styleUrl: './trial-list.component.scss',
 })
@@ -18,7 +21,10 @@ export class TrialListComponent implements OnInit, OnDestroy {
   error = signal<string | null>(null);
   private timerSub: Subscription | null = null;
 
-  constructor(private trialsService: TrialsService) {}
+  constructor(
+    private trialsService: TrialsService,
+    private favoritesService: FavoritesService
+  ) {}
 
   ngOnInit(): void {
     this.loadInitialTrials();
@@ -54,6 +60,27 @@ export class TrialListComponent implements OnInit, OnDestroy {
         this.trials.set(updated);
       });
     });
+  }
+
+  selected = signal<Set<string>>(new Set());
+
+  toggleSelection(trialId: string) {
+    const current = new Set(this.selected());
+    if (current.has(trialId)) {
+      current.delete(trialId);
+    } else {
+      current.add(trialId);
+    }
+    this.selected.set(current);
+  }
+
+  addToFavorites() {
+    const selectedIds = this.selected();
+    const selectedTrials = this.trials().filter((trial) =>
+      selectedIds.has(trial.protocolSection?.identificationModule?.nctId)
+    );
+    this.favoritesService.addFavorites(selectedTrials);
+    this.selected.set(new Set());
   }
 
   ngOnDestroy(): void {

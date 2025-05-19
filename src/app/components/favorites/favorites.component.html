@@ -1,1 +1,12 @@
-<p>favorites works!</p>
+<h2>Your Favorites</h2>
+<mat-card *ngFor="let trial of favorites" class="trial-card">
+  <mat-card-title>
+    {{ trial.protocolSection?.identificationModule?.briefTitle }}
+  </mat-card-title>
+  <mat-card-content>
+    <p>
+      <strong>NCT ID:</strong>
+      {{ trial.protocolSection?.identificationModule?.nctId }}
+    </p>
+  </mat-card-content>
+</mat-card>
