@@ -1,10 +1,9 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
-
-import { catchError, finalize } from 'rxjs/operators';
-import { of } from 'rxjs';
 import { TrialsService } from '../../services/trial.service';
+import { catchError, finalize } from 'rxjs/operators';
+import { of, interval, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-trial-list',
@@ -13,15 +12,17 @@ import { TrialsService } from '../../services/trial.service';
   templateUrl: './trial-list.component.html',
   styleUrl: './trial-list.component.scss',
 })
-export class TrialListComponent implements OnInit {
+export class TrialListComponent implements OnInit, OnDestroy {
   trials = signal<any[]>([]);
   loading = signal(false);
   error = signal<string | null>(null);
+  private timerSub: Subscription | null = null;
 
   constructor(private trialsService: TrialsService) {}
 
   ngOnInit(): void {
     this.loadInitialTrials();
+    this.startTimer();
   }
 
   loadInitialTrials() {
@@ -29,7 +30,7 @@ export class TrialListComponent implements OnInit {
     this.error.set(null);
 
     this.trialsService
-      .fetchRandomTrials()
+      .fetchInitialTrials()
       .pipe(
         catchError((err) => {
           this.error.set('Failed to load trials');
@@ -38,9 +39,24 @@ export class TrialListComponent implements OnInit {
         finalize(() => this.loading.set(false))
       )
       .subscribe((res: any) => {
-        const items = res?.studies || [];
-        console.log('Fetched trials:', items);
-        this.trials.set(items);
+        this.trials.set(res?.studies || []);
       });
+  }
+
+  startTimer() {
+    this.timerSub = interval(5000).subscribe(() => {
+      this.trialsService.fetchNextTrial().subscribe((res: any) => {
+        const newTrial = res?.studies?.[0];
+        if (!newTrial) return;
+
+        const current = this.trials();
+        const updated = [newTrial, ...current.slice(0, 9)];
+        this.trials.set(updated);
+      });
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.timerSub?.unsubscribe();
   }
 }
