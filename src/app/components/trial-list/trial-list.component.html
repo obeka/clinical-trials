@@ -1,1 +1,44 @@
-<p>trial-list works!</p>
+<div *ngIf="loading()">Loading trials...</div>
+<div *ngIf="error()" class="error">{{ error() }}</div>
+<div *ngIf="!loading() && trials().length === 0">No trials found.</div>
+
+<mat-card *ngFor="let trial of trials()" class="trial-card">
+  <mat-card-title>
+    {{
+      trial.protocolSection?.identificationModule?.briefTitle ||
+        "No title available"
+    }}
+  </mat-card-title>
+
+  <mat-card-content>
+    <p>
+      <strong>NCT ID:</strong>
+      {{ trial.protocolSection?.identificationModule?.nctId }}
+    </p>
+    <p>
+      <strong>Status:</strong>
+      {{ trial.protocolSection?.statusModule?.overallStatus }}
+    </p>
+    <p>
+      <strong>Conditions:</strong>
+      {{
+        trial.protocolSection?.conditionsModule?.conditions?.join(", ") || "N/A"
+      }}
+    </p>
+    <p>
+      <strong>Phase:</strong>
+      {{ trial.protocolSection?.designModule?.phases?.join(", ") || "N/A" }}
+    </p>
+    <p>
+      <strong>Sponsor:</strong>
+      {{
+        trial.protocolSection?.sponsorCollaboratorsModule?.leadSponsor?.name ||
+          "N/A"
+      }}
+    </p>
+    <p>
+      <strong>Start Date:</strong>
+      {{ trial.protocolSection?.statusModule?.startDateStruct?.date || "N/A" }}
+    </p>
+  </mat-card-content>
+</mat-card>
