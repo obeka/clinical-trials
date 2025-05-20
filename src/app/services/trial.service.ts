@@ -14,7 +14,11 @@ export class TrialsService {
 
   fetchInitialTrials(): Observable<any> {
     this.nextToken = null;
-    return this.http.get(`${this.apiUrl}?pageSize=10`);
+    return this.http.get(`${this.apiUrl}?pageSize=10`).pipe(
+      tap((res: any) => {
+        this.nextToken = res?.nextPageToken ?? null;
+      })
+    );
   }
 
   fetchNextTrial(): Observable<any> {
