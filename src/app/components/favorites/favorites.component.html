@@ -4,8 +4,28 @@
   <p>No favorites selected yet.</p>
 </div>
 
+<button
+  mat-raised-button
+  color="warn"
+  (click)="removeFromFavorites()"
+  [disabled]="selected().size === 0"
+  style="margin-bottom: 1rem"
+>
+  Remove Selected Favorites
+</button>
+
 <mat-card *ngFor="let trial of favorites" class="trial-card">
-  <mat-card-title>
+  <mat-card-title style="display: flex; align-items: center; gap: 0.5rem">
+    <mat-checkbox
+      (change)="
+        toggleSelection(
+          trial.protocolSection?.identificationModule?.nctId || ''
+        )
+      "
+      [checked]="
+        selected().has(trial.protocolSection?.identificationModule?.nctId || '')
+      "
+    ></mat-checkbox>
     {{
       trial.protocolSection?.identificationModule?.briefTitle ||
         "No title available"

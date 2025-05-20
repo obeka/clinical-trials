@@ -28,4 +28,12 @@ export class FavoritesService {
     );
     this.favorites.set(filtered);
   }
+
+  removeFavorites(ids: Set<string>): void {
+    const filtered = this.favorites().filter((item) => {
+      const nctId = item.protocolSection?.identificationModule?.nctId || '';
+      return !ids.has(nctId);
+    });
+    this.favorites.set(filtered);
+  }
 }
