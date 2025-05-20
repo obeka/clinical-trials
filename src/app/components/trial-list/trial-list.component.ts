@@ -16,7 +16,8 @@ import { FavoritesService } from '../../services/favorites.service';
   styleUrl: './trial-list.component.scss',
 })
 export class TrialListComponent implements OnInit, OnDestroy {
-  trials = signal<any[]>([]);
+  trials;
+
   loading = signal(false);
   error = signal<string | null>(null);
   countdown = signal(5);
@@ -25,29 +26,30 @@ export class TrialListComponent implements OnInit, OnDestroy {
   constructor(
     private trialsService: TrialsService,
     private favoritesService: FavoritesService
-  ) {}
-
-  ngOnInit(): void {
-    this.loadInitialTrials();
-    this.startTimer();
+  ) {
+    this.trials = this.trialsService.trials;
   }
 
-  loadInitialTrials() {
-    this.loading.set(true);
+  ngOnInit(): void {
     this.error.set(null);
-
-    this.trialsService
-      .fetchInitialTrials()
-      .pipe(
-        catchError((err) => {
-          this.error.set('Failed to load trials');
-          return of({ studies: [] });
-        }),
-        finalize(() => this.loading.set(false))
-      )
-      .subscribe((res: any) => {
-        this.trials.set(res?.studies || []);
-      });
+    if (this.trials().length === 0) {
+      this.loading.set(true);
+      this.trialsService
+        .fetchInitialTrials()
+        .pipe(
+          catchError((err) => {
+            this.error.set('Failed to load trials');
+            return of({ studies: [] });
+          }),
+          finalize(() => this.loading.set(false))
+        )
+        .subscribe(() => {
+          this.startTimer();
+        });
+    } else {
+      // Trials already in memory, just resume timer
+      this.startTimer();
+    }
   }
 
   startTimer() {
@@ -58,15 +60,8 @@ export class TrialListComponent implements OnInit, OnDestroy {
       if (current > 1) {
         this.countdown.set(current - 1);
       } else {
-        this.countdown.set(5); // reset
-        this.trialsService.fetchNextTrial().subscribe((res: any) => {
-          const newTrial = res?.studies?.[0];
-          if (!newTrial) return;
-
-          const current = this.trials();
-          const updated = [newTrial, ...current.slice(0, 9)];
-          this.trials.set(updated);
-        });
+        this.countdown.set(5);
+        this.trialsService.fetchNextTrial().subscribe();
       }
     });
 

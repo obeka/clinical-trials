@@ -1,14 +1,13 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { effect } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class TrialsService {
   private apiUrl = 'https://clinicaltrials.gov/api/v2/studies';
   private nextToken: string | null = null;
+
+  public trials = signal<any[]>([]);
 
   constructor(private http: HttpClient) {}
 
@@ -16,7 +15,8 @@ export class TrialsService {
     this.nextToken = null;
     return this.http.get(`${this.apiUrl}?pageSize=10`).pipe(
       tap((res: any) => {
-        this.nextToken = res?.nextPageToken ?? null;
+        this.trials.set(res.studies || []);
+        this.nextToken = res.nextPageToken ?? null;
       })
     );
   }
@@ -28,8 +28,21 @@ export class TrialsService {
 
     return this.http.get(url).pipe(
       tap((res: any) => {
-        this.nextToken = res?.nextPageToken ?? null;
+        const newTrial = res.studies?.[0];
+        if (newTrial) {
+          const current = this.trials();
+          this.trials.set([newTrial, ...current.slice(0, 9)]);
+        }
+        this.nextToken = res.nextPageToken ?? null;
       })
     );
+  }
+
+  getNextPageToken() {
+    return this.nextToken;
+  }
+
+  setNextPageToken(token: string | null) {
+    this.nextToken = token;
   }
 }
