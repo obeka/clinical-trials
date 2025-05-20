@@ -1,15 +1,15 @@
-import { Injectable } from '@angular/core';
-import { signal } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
+import { Study } from '../models/trial.model';
 
 @Injectable({ providedIn: 'root' })
 export class FavoritesService {
-  private favorites = signal<any[]>([]);
+  private favorites = signal<Study[]>([]);
 
-  getFavorites() {
+  getFavorites(): Study[] {
     return this.favorites();
   }
 
-  addFavorites(items: any[]) {
+  addFavorites(items: Study[]): void {
     const current = this.favorites();
     const added = items.filter(
       (item) =>
@@ -22,7 +22,7 @@ export class FavoritesService {
     this.favorites.set([...current, ...added]);
   }
 
-  removeFavorite(id: string) {
+  removeFavorite(id: string): void {
     const filtered = this.favorites().filter(
       (item) => item.protocolSection?.identificationModule?.nctId !== id
     );

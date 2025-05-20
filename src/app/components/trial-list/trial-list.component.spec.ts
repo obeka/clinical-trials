@@ -8,11 +8,12 @@ import {
 import { TrialListComponent } from './trial-list.component';
 import { TrialsService } from '../../services/trial.service';
 import { FavoritesService } from '../../services/favorites.service';
-import { of, throwError } from 'rxjs';
+import { of, throwError, Subscription } from 'rxjs';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { signal } from '@angular/core';
+import { Study } from '../../models/trial.model';
 
 describe('TrialListComponent', () => {
   let component: TrialListComponent;
@@ -63,7 +64,7 @@ describe('TrialListComponent', () => {
         },
       },
     },
-  ];
+  ] as Study[];
 
   beforeEach(async () => {
     // mock services
@@ -178,7 +179,9 @@ describe('TrialListComponent', () => {
     fixture.detectChanges();
 
     const mockUnsubscribe = jest.fn();
-    component['timerSub'] = { unsubscribe: mockUnsubscribe } as any;
+    component['timerSub'] = {
+      unsubscribe: mockUnsubscribe,
+    } as unknown as Subscription;
 
     component.ngOnDestroy();
 

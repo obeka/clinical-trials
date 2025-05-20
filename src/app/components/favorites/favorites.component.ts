@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { FavoritesService } from '../../services/favorites.service';
+import { Study } from '../../models/trial.model'; // adjust the path if needed
 
 @Component({
   selector: 'app-favorites',
@@ -10,7 +11,7 @@ import { FavoritesService } from '../../services/favorites.service';
   templateUrl: './favorites.component.html',
 })
 export class FavoritesComponent implements OnInit {
-  favorites: any;
+  favorites: Study[] = [];
 
   constructor(private favoritesService: FavoritesService) {}
 

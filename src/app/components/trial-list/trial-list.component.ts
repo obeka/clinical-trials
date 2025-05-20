@@ -37,7 +37,7 @@ export class TrialListComponent implements OnInit, OnDestroy {
       this.trialsService
         .fetchInitialTrials()
         .pipe(
-          catchError((err) => {
+          catchError(() => {
             this.error.set('Failed to load trials');
             return of({ studies: [] });
           }),
