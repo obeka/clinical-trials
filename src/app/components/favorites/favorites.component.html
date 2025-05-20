@@ -1,12 +1,36 @@
-<h2>Your Favorites</h2>
+<h2>Your Favorite Trials</h2>
+
+<div *ngIf="favorites.length === 0">
+  <p>No favorites selected yet.</p>
+</div>
+
 <mat-card *ngFor="let trial of favorites" class="trial-card">
   <mat-card-title>
-    {{ trial.protocolSection?.identificationModule?.briefTitle }}
+    {{
+      trial.protocolSection?.identificationModule?.briefTitle ||
+        "No title available"
+    }}
   </mat-card-title>
+
   <mat-card-content>
     <p>
       <strong>NCT ID:</strong>
       {{ trial.protocolSection?.identificationModule?.nctId }}
+    </p>
+    <p>
+      <strong>Status:</strong>
+      {{ trial.protocolSection?.statusModule?.overallStatus }}
+    </p>
+    <p>
+      <strong>Phase:</strong>
+      {{ trial.protocolSection?.designModule?.phases?.join(", ") || "N/A" }}
+    </p>
+    <p>
+      <strong>Sponsor:</strong>
+      {{
+        trial.protocolSection?.sponsorCollaboratorsModule?.leadSponsor?.name ||
+          "N/A"
+      }}
     </p>
   </mat-card-content>
 </mat-card>
