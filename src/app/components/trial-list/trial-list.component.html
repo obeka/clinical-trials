@@ -12,6 +12,10 @@
   Add to Favorites
 </button>
 
+<p style="margin: 1rem 0; font-weight: bold">
+  ⏳ Next update in: {{ countdown() }}s
+</p>
+
 <mat-card *ngFor="let trial of trials()" class="trial-card">
   <mat-card-title style="display: flex; align-items: center; gap: 0.5rem">
     <mat-checkbox

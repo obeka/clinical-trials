@@ -19,6 +19,7 @@ export class TrialListComponent implements OnInit, OnDestroy {
   trials = signal<any[]>([]);
   loading = signal(false);
   error = signal<string | null>(null);
+  countdown = signal(5);
   private timerSub: Subscription | null = null;
 
   constructor(
@@ -50,16 +51,26 @@ export class TrialListComponent implements OnInit, OnDestroy {
   }
 
   startTimer() {
-    this.timerSub = interval(5000).subscribe(() => {
-      this.trialsService.fetchNextTrial().subscribe((res: any) => {
-        const newTrial = res?.studies?.[0];
-        if (!newTrial) return;
+    this.countdown.set(5);
 
-        const current = this.trials();
-        const updated = [newTrial, ...current.slice(0, 9)];
-        this.trials.set(updated);
-      });
+    const totalInterval = interval(1000).subscribe(() => {
+      const current = this.countdown();
+      if (current > 1) {
+        this.countdown.set(current - 1);
+      } else {
+        this.countdown.set(5); // reset
+        this.trialsService.fetchNextTrial().subscribe((res: any) => {
+          const newTrial = res?.studies?.[0];
+          if (!newTrial) return;
+
+          const current = this.trials();
+          const updated = [newTrial, ...current.slice(0, 9)];
+          this.trials.set(updated);
+        });
+      }
     });
+
+    this.timerSub = totalInterval;
   }
 
   selected = signal<Set<string>>(new Set());
