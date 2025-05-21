@@ -7,11 +7,12 @@ import { TrialsService } from '../../services/trial.service';
 import { catchError, finalize } from 'rxjs/operators';
 import { of, interval, Subscription } from 'rxjs';
 import { FavoritesService } from '../../services/favorites.service';
+import { TrialCardComponent } from '../shared/trial-card/trial-card.component';
 
 @Component({
   selector: 'app-trial-list',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatButtonModule, MatCheckboxModule],
+  imports: [CommonModule, MatCardModule, MatButtonModule, MatCheckboxModule, TrialCardComponent],
   templateUrl: './trial-list.component.html',
   styleUrl: './trial-list.component.scss',
 })

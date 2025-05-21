@@ -16,53 +16,9 @@
   ⏳ Next update in: {{ countdown() }}s
 </p>
 
-<mat-card *ngFor="let trial of trials()" class="trial-card">
-  <mat-card-title style="display: flex; align-items: center; gap: 0.5rem">
-    <mat-checkbox
-      (change)="
-        toggleSelection(
-          trial.protocolSection?.identificationModule?.nctId ?? ''
-        )
-      "
-      [checked]="
-        selected().has(trial.protocolSection?.identificationModule?.nctId ?? '')
-      "
-    ></mat-checkbox>
-    {{
-      trial.protocolSection?.identificationModule?.briefTitle ||
-        "No title available"
-    }}
-  </mat-card-title>
-
-  <mat-card-content>
-    <p>
-      <strong>NCT ID:</strong>
-      {{ trial.protocolSection?.identificationModule?.nctId }}
-    </p>
-    <p>
-      <strong>Status:</strong>
-      {{ trial.protocolSection?.statusModule?.overallStatus }}
-    </p>
-    <p>
-      <strong>Conditions:</strong>
-      {{
-        trial.protocolSection?.conditionsModule?.conditions?.join(", ") || "N/A"
-      }}
-    </p>
-    <p>
-      <strong>Phase:</strong>
-      {{ trial.protocolSection?.designModule?.phases?.join(", ") || "N/A" }}
-    </p>
-    <p>
-      <strong>Sponsor:</strong>
-      {{
-        trial.protocolSection?.sponsorCollaboratorsModule?.leadSponsor?.name ||
-          "N/A"
-      }}
-    </p>
-    <p>
-      <strong>Start Date:</strong>
-      {{ trial.protocolSection?.statusModule?.startDateStruct?.date || "N/A" }}
-    </p>
-  </mat-card-content>
-</mat-card>
+<app-trial-card 
+  *ngFor="let trial of trials()" 
+  [trial]="trial"
+  [isSelected]="selected().has(trial.protocolSection?.identificationModule?.nctId || '')"
+  (selectionChange)="toggleSelection($event)"
+></app-trial-card>

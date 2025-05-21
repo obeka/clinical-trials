@@ -4,12 +4,19 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FavoritesService } from '../../services/favorites.service';
-import { Study } from '../../models/trial.model'; // adjust the path if needed
+import { Study } from '../../models/trial.model';
+import { TrialCardComponent } from '../shared/trial-card/trial-card.component';
 
 @Component({
   selector: 'app-favorites',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatButtonModule, MatCheckboxModule],
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatButtonModule,
+    MatCheckboxModule,
+    TrialCardComponent,
+  ],
   templateUrl: './favorites.component.html',
 })
 export class FavoritesComponent implements OnInit {
