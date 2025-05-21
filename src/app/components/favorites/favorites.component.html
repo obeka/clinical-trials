@@ -1,6 +1,6 @@
-<h2>Your Favorite Trials</h2>
+<h2 class="center-text">Your Favorite Trials</h2>
 
-<div *ngIf="favorites.length === 0">
+<div *ngIf="favorites.length === 0" class="center-text">
   <p>No favorites selected yet.</p>
 </div>
 
@@ -9,7 +9,7 @@
   color="warn"
   (click)="removeFromFavorites()"
   [disabled]="selected().size === 0"
-  style="margin-bottom: 1rem"
+  class="button-center"
 >
   Remove Selected Favorites
 </button>
