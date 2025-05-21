@@ -20,10 +20,12 @@
   <mat-card-title style="display: flex; align-items: center; gap: 0.5rem">
     <mat-checkbox
       (change)="
-        toggleSelection(trial.protocolSection?.identificationModule?.nctId)
+        toggleSelection(
+          trial.protocolSection?.identificationModule?.nctId ?? ''
+        )
       "
       [checked]="
-        selected().has(trial.protocolSection?.identificationModule?.nctId)
+        selected().has(trial.protocolSection?.identificationModule?.nctId ?? '')
       "
     ></mat-checkbox>
     {{
