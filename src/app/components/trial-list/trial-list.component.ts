@@ -12,7 +12,13 @@ import { TrialCardComponent } from '../shared/trial-card/trial-card.component';
 @Component({
   selector: 'app-trial-list',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatButtonModule, MatCheckboxModule, TrialCardComponent],
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatButtonModule,
+    MatCheckboxModule,
+    TrialCardComponent,
+  ],
   templateUrl: './trial-list.component.html',
   styleUrl: './trial-list.component.scss',
 })
@@ -22,6 +28,7 @@ export class TrialListComponent implements OnInit, OnDestroy {
   loading = signal(false);
   error = signal<string | null>(null);
   countdown = signal(5);
+  timerActive = signal(true);
   private timerSub: Subscription | null = null;
 
   constructor(
@@ -54,19 +61,40 @@ export class TrialListComponent implements OnInit, OnDestroy {
   }
 
   startTimer() {
-    this.countdown.set(5);
+    this.timerSub?.unsubscribe();
 
-    const totalInterval = interval(1000).subscribe(() => {
-      const current = this.countdown();
-      if (current > 1) {
-        this.countdown.set(current - 1);
-      } else {
-        this.countdown.set(5);
-        this.trialsService.fetchNextTrial().subscribe();
-      }
-    });
+    // Only start if timer is active
+    if (this.timerActive()) {
+      this.countdown.set(5);
 
-    this.timerSub = totalInterval;
+      const totalInterval = interval(1000).subscribe(() => {
+        // Only process if timer is still active
+        if (this.timerActive()) {
+          const current = this.countdown();
+          if (current > 1) {
+            this.countdown.set(current - 1);
+          } else {
+            this.countdown.set(5);
+            this.trialsService.fetchNextTrial().subscribe();
+          }
+        }
+      });
+
+      this.timerSub = totalInterval;
+    }
+  }
+
+  toggleTimer() {
+    this.timerActive.update((active) => !active);
+
+    if (this.timerActive()) {
+      // If we're turning it on, restart the timer
+      this.startTimer();
+    } else {
+      // If we're turning it off, stop the timer
+      this.timerSub?.unsubscribe();
+      this.timerSub = null;
+    }
   }
 
   selected = signal<Set<string>>(new Set());

@@ -55,7 +55,12 @@
     ],
     "testPathIgnorePatterns": [
       "<rootDir>/node_modules/",
-      "<rootDir>/dist/"
+      "<rootDir>/dist/",
+      "<rootDir>/e2e/",
+      "<rootDir>/playwright*/"
+    ],
+    "testMatch": [
+      "**/*.spec.ts"
     ],
     "globals": {
       "ts-jest": {

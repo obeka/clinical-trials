@@ -16,9 +16,14 @@
   Add to Favorites
 </button>
 
-<p class="center-text" style="font-weight: bold">
-  ⏳ Next update in: {{ countdown() }}s
-</p>
+<div class="button-container">
+  <p style="font-weight: bold; margin: 0">
+    ⏳ Next update in: {{ timerActive() ? countdown() + "s" : "Paused" }}
+  </p>
+  <button mat-raised-button color="primary" (click)="toggleTimer()">
+    {{ timerActive() ? "Pause Timer" : "Resume Timer" }}
+  </button>
+</div>
 
 <app-trial-card
   *ngFor="let trial of trials()"

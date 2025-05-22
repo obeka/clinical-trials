@@ -190,4 +190,20 @@ describe('TrialListComponent', () => {
 
     discardPeriodicTasks();
   }));
+
+  it('should toggle timer state correctly', fakeAsync(() => {
+    fixture.detectChanges();
+
+    expect(component.timerActive()).toBeTruthy();
+
+    // Toggle timer off
+    component.toggleTimer();
+    expect(component.timerActive()).toBeFalsy();
+
+    // Toggle timer back on
+    component.toggleTimer();
+    expect(component.timerActive()).toBeTruthy();
+
+    discardPeriodicTasks();
+  }));
 });
