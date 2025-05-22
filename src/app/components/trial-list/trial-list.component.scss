@@ -9,8 +9,7 @@
 
 .button-center {
   display: block;
-  margin-left: auto;
-  margin-right: auto;
+  margin: auto;
 }
 
 .button-container {
@@ -18,5 +17,5 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 16px;
 }

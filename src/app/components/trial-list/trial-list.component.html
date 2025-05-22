@@ -17,9 +17,7 @@
 </button>
 
 <div class="button-container">
-  <p style="font-weight: bold; margin: 0">
-    ⏳ Next update in: {{ timerActive() ? countdown() + "s" : "Paused" }}
-  </p>
+  <p>⏳ Next update in: {{ timerActive() ? countdown() + "s" : "Paused" }}</p>
   <button mat-raised-button color="primary" (click)="toggleTimer()">
     {{ timerActive() ? "Pause Timer" : "Resume Timer" }}
   </button>

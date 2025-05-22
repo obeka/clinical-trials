@@ -11,6 +11,7 @@ export class FavoritesService {
 
   addFavorites(items: Study[]): void {
     const current = this.favorites();
+    // Only add items that are not already in favorites
     const added = items.filter(
       (item) =>
         !current.some(
@@ -20,13 +21,6 @@ export class FavoritesService {
         )
     );
     this.favorites.set([...current, ...added]);
-  }
-
-  removeFavorite(id: string): void {
-    const filtered = this.favorites().filter(
-      (item) => item.protocolSection?.identificationModule?.nctId !== id
-    );
-    this.favorites.set(filtered);
   }
 
   removeFavorites(ids: Set<string>): void {

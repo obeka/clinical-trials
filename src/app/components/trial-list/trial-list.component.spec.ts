@@ -116,14 +116,13 @@ describe('TrialListComponent', () => {
     fixture.detectChanges();
 
     expect(trialsServiceMock.fetchInitialTrials).toHaveBeenCalled();
-    expect(component.loading()).toBeFalsy(); // Should be false after finalization
+    expect(component.loading()).toBeFalsy(); // Should be false after component initialized
   });
 
   it('should not fetch trials if trials already exist', () => {
     // Initialize component with non-empty trials
     fixture.detectChanges();
 
-    // Fetch should not be called
     expect(trialsServiceMock.fetchInitialTrials).not.toHaveBeenCalled();
   });
 
@@ -152,7 +151,6 @@ describe('TrialListComponent', () => {
 
     component.addToFavorites();
 
-    // Check that favorites service was called with correct trial
     expect(favoritesServiceMock.addFavorites).toHaveBeenCalledWith([
       mockTrials[0],
     ]);
@@ -185,7 +183,6 @@ describe('TrialListComponent', () => {
 
     component.ngOnDestroy();
 
-    // Check that unsubscribe was called
     expect(mockUnsubscribe).toHaveBeenCalled();
 
     discardPeriodicTasks();

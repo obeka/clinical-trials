@@ -22,15 +22,6 @@ describe('FavoritesService', () => {
     expect(service.getFavorites()).toContain(study);
   });
 
-  it('should remove a favorite by id', () => {
-    const study: Study = {
-      protocolSection: { identificationModule: { nctId: '123' } },
-    } as Study;
-    service.addFavorites([study]);
-    service.removeFavorite('123');
-    expect(service.getFavorites()).not.toContain(study);
-  });
-
   it('should remove multiple favorites by ids', () => {
     const study1: Study = {
       protocolSection: { identificationModule: { nctId: '123' } },
